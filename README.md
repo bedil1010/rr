@@ -17,9 +17,7 @@ The table below represents weekly 2018 retail scan data for National retail volu
 
 ## Features
 - `Date` - The date of the observation
-
 - `AveragePrice` - the average price of a single avocado
-
 - `type` - conventional or organic
 
 - `year` - the year
