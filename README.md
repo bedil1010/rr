@@ -1,15 +1,15 @@
 # Avocado Analysis 
 Here we are just using avocado dataset from kaggle.com for analysis where we will utilize Shiny package. Especially you will find the feature as:
 
-## Map of the avocado consumption in US
+- Map of the avocado consumption in US
 
-## THe relationship of the various feature of the dataset
+- The relationship of the various feature of the dataset
 
-## Simple linear regression for Price vs Volume
+- Simple linear regression for Price vs Volume
 
 All of the mentioned above us done using Shiny from R.
 
-# Content
+# Dataset
 
 This data was downloaded from the Hass Avocado Board website in May of 2018 & compiled into a single CSV. Here's how the Hass Avocado Board describes the data on their website:
 
@@ -19,15 +19,9 @@ The table below represents weekly 2018 retail scan data for National retail volu
 - `Date` - The date of the observation
 - `AveragePrice` - the average price of a single avocado
 - `type` - conventional or organic
-
 - `year` - the year
-
 - `Region` - the city or region of the observation
-
 - `Total Volume` - Total number of avocados sold
-
 - `4046` - Total number of avocados with PLU 4046 sold
-
 - `4225` - Total number of avocados with PLU 4225 sold
-
 - `4770` - Total number of avocados with PLU 4770 sold
