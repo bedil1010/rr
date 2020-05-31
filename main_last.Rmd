@@ -1,0 +1,520 @@
+
+---
+output: html_document 
+runtime: shiny 
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+library(tibbletime)
+library(shiny)
+library(tidyverse)
+library(rvest)
+library(magrittr)
+library(ggmap)
+library(stringr)
+library(usmap)
+library(gtrendsR)
+library(shinyWidgets)
+
+```
+
+
+```{r, echo=FALSE}
+
+
+  
+mainPanel(
+      fluidRow(
+         align = "center",
+         h1(strong("Avocado project")), 
+         h6("by",br(),"Inga Zielińska and Bedil Karimov"),
+         
+      ), width = 12,  
+      br()        
+)
+
+titlePanel(tags$img(src = "./src/picture.jpg", width = "100%"), 
+           br()
+           )
+
+mainPanel(br())
+sidebarLayout(position = "left",
+  sidebarPanel(
+    tabsetPanel(
+        tabPanel("Health benefits",sidebarLayout(position = "right",
+            sidebarPanel(width = 4, br(),tags$img(src ="https://www.californiaavocado.com/CorporateSite/media/AVOC/Nutrition/avocado-nutrition-facts@2x.jpg", width = "100%")
+               ),
+               mainPanel(
+                 p(
+                    br(),
+                        "1.Avocados Are a Heart-Healthy, Nutrient-Dense Superfood   Nutrient-dense foods are those that provide substantial amounts of vitamins, minerals and other nutrients with relatively few calories. One-third of a medium avocado (50 g) has 80 calories and contributes nearly 20 vitamins and minerals, making it a great nutrient-dense food choice.",
+                 br(),
+                 br(),
+                 
+                 "2.Contains Good Fats The avocado is virtually the only fruit that contains heart-healthy monounsaturated fat – good fat!",
+                 
+                 br(),
+                 br(),
+                 
+                 "3.Naturally Sodium-, Sugar- and Cholesterol-Free California Avocados are naturally sodium-, sugar- and cholesterol-free.",
+                 
+                br(),
+                 br(),
+                
+                "4.A Unique Fruit Avocados can act as a “nutrient booster” by helping increase the absorption of fat-soluble nutrients such as vitamins A, D, K and E.",
+                
+                 br(),
+                 br(),
+                
+                "5.Great for Babies and Kids The avocado’s creamy consistency makes it one of the first fresh foods a baby can enjoy."
+                 
+               ))
+          
+          
+        )), 
+        tabPanel("Types",
+        mainPanel(width = 12, 
+          tags$img(src="./src/types.jpg", height = "80%", width = "100%"),
+          br(),
+          br(),
+         
+        ),
+        p(
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+          br(),
+      
+          "The table above shows different types of avocados.",
+          br(),
+          br()
+        )
+        ), 
+        tabPanel("Interesting facts", 
+                 p( 
+                   br(), 
+                      "Experts found that when people with this mutation in the SCARB1 gene, called the P376L variant, have high levels of HDL-C. HDL-C is the good cholesterol found in avocados and people with the mutation have an 80 per cent increased relative risk of coronary heart disease. ",
+                  br(),
+                  br(),
+          
+   "An avocado that's ready to eat has light green flesh. A rotten one has brown or black spots throughout the flesh",
+                br(),
+                br(),
+  " Avocado contains a toxin called persin, but only certain species of animals are poisoned by persin. While dogs and cats are rarely affected by persin, avocado poisoning can be deadly to birds and large animals (such as cows, goats, sheep)."
+          
+          ))
+        
+   ),width = 8
+),
+
+mainPanel(
+  fluidPage( 
+         style = "background-color: #E5AA66;",
+         style = "color:white",
+         br(),
+         p("AVOCADO NUTRIENTS
+One-third of a medium avocado (50 g) has 80 calories and contributes nearly 20 vitamins, minerals and phytonutrients, making it a heart-healthy choice to help meet nutrient needs. Although phytonutrients are not essential, research suggests they may promote human health.
+
+The Dietary Guidelines for Americans and the American Heart Association recommend eating less nutrient-poor foods and limiting the amount of saturated fat, trans fat, added sugars and sodium consumed. The majority of fats in one’s diet should be heart-healthy monounsaturated or polyunsaturated; more than 75 percent of the fat in avocados is unsaturated, good fat.
+
+Why naturally good fats? Because the body needs some dietary fat in moderation to help with absorption of nutrients. Good fats, monounsaturated and polyunsaturated fats, do not raise LDL (“bad”) cholesterol levels..")
+
+  ),width = 4))
+
+
+```
+
+
+```{r, echo=FALSE}
+mainPanel(
+fluidRow(
+   tags$h2("Analysis of the data"),
+   setBackgroundImage(tags$img(src="./src/avocados.jpg", height = "80%", width = "100%")),
+  align = "center",
+  selectInput("rows", 
+                  label = "Choose a variable to display",
+                  choices = c("AveragePrice", "Total.Volume"),
+                  selected = "AveragePrice")
+ # style = "background-color: #b1d08e;",
+
+   
+), width = 12)
+
+
+mainPanel(br())
+```
+
+
+```{r, include = FALSE}
+  avocados<-read.csv("./avocado/Data/avocado.csv")
+  avocados <- avocados[ ,c(-1)]
+  avocados$states <- NA
+  avocados$states <- ifelse(avocados$region== "Albany","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Boise","Idaho",avocados$states)
+avocados$states <- ifelse(avocados$region== "California","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "CincinnatiDayton","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "Denver","Colorado",avocados$states)
+avocados$states <- ifelse(avocados$region== "Houston","Texas",avocados$states)
+avocados$states <- ifelse(avocados$region== "LasVegas","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "MiamiFtLauderdale","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "NewOrleansMobile","Louisiana",avocados$states)
+avocados$states <- ifelse(avocados$region== "PhoenixTucson","Arizona",avocados$states)
+avocados$states <- ifelse(avocados$region== "Portland","Oregon",avocados$states)
+avocados$states <- ifelse(avocados$region== "Roanoke","Virginia",avocados$states)
+avocados$states <- ifelse(avocados$region== "SanFrancisco","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "StLouis","Missouri",avocados$states)
+avocados$states <- ifelse(avocados$region== "Atlanta","Georgia",avocados$states)
+avocados$states <- ifelse(avocados$region== "Boston","Massachusetts",avocados$states)
+avocados$states <- ifelse(avocados$region== "Charlotte","North Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "HarrisburgScranton","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "Indianapolis","Indiana",avocados$states)
+avocados$states <- ifelse(avocados$region== "LosAngeles","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "NewYork","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Orlando","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "Pittsburgh","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "RaleighGreensboro","North Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "Sacramento","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "Seattle","Washington",avocados$states)
+avocados$states <- ifelse(avocados$region== "Syracuse","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "BaltimoreWashington","Maryland",avocados$states)
+avocados$states <- ifelse(avocados$region== "BuffaloRochester","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Chicago","Illinois",avocados$states)
+avocados$states <- ifelse(avocados$region== "DallasFtWorth","Texas",avocados$states)
+avocados$states <- ifelse(avocados$region== "GrandRapids","Michigan",avocados$states)
+avocados$states <- ifelse(avocados$region== "HartfordSpringfield","Connecticut",avocados$states)
+avocados$states <- ifelse(avocados$region== "Jacksonville","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "Louisville","Kentucky",avocados$states)
+avocados$states <- ifelse(avocados$region== "Nashville","Tennessee",avocados$states)
+avocados$states <- ifelse(avocados$region== "Philadelphia","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "RichmondNorfolk","Virginia",avocados$states)
+avocados$states <- ifelse(avocados$region== "SanDiego","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "SouthCarolina","South Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "Spokane","Washington",avocados$states)
+avocados$states <- ifelse(avocados$region== "Tampa","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "WestTexNewMexico","New Mexico",avocados$states)
+avocados$states <- ifelse(avocados$region== "Columbus","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "Detroit","NewYork",avocados$states)
+avocados$states <- ifelse(avocados$region== "GreatLakes","Minnesota",avocados$states)
+avocados$states <- ifelse(avocados$region== "SouthCentral","Oklahoma",avocados$states)
+avocados$states <- ifelse(avocados$region== "Southeast","Arkansas",avocados$states)
+avocados$states <- ifelse(avocados$region== "Northeast","Maine",avocados$states)
+avocados$states <- ifelse(avocados$region== "West","Nevada",avocados$states)
+
+
+```
+
+
+```{r, echo=FALSE}
+sidebarLayout(position = "right",
+              
+  sidebarPanel(
+renderTable({
+  
+  if(input$rows == "AveragePrice"){ var <- 2  }
+  if(input$rows == "Total.Volume"){ var <- 3  }
+  
+  avocados_no_na <- avocados[which(!is.na(avocados$states)),c(var,14)]
+
+  avocados_no_na_grouped <- avocados_no_na %>%
+  group_by(states) %>%
+    summarise(mean = mean(!!rlang::sym(input$rows),na.rm=TRUE))
+    head(avocados_no_na_grouped, 10) 
+
+  
+    
+})),
+
+mainPanel(
+renderPlot({ 
+  
+  
+   if(input$rows == "AveragePrice"){ var <- 2  }
+  if(input$rows == "Total.Volume"){ var <- 3  }
+  
+  avocados_no_na <- avocados[which(!is.na(avocados$states)),c(var,14)]
+
+  avocados_no_na_grouped <- avocados_no_na %>%
+  group_by(states) %>%
+    summarise(mean = mean(!!rlang::sym(input$rows),na.rm=TRUE))
+    head(avocados_no_na_grouped, 10) 
+  
+  avocados_no_na_grouped$fips <-fips(avocados_no_na_grouped$states)
+  colnames(avocados_no_na_grouped) <- c("state","hits","fips")
+
+  plot_usmap(
+    data = avocados_no_na_grouped,
+             values = "hits",
+             color = "white", 
+             labels=FALSE) + 
+  scale_fill_continuous( low = "#C5DBC5", high = "#239223", 
+                         name = "Mean per state", label = scales::comma
+  ) + 
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Popularity of Thanksgiving Google Search by State", caption = "Source: @littlemissdata")
+  
+})))
+
+
+
+```
+
+
+```{r, echo=FALSE}
+
+dataset <- read.csv("./avocado/Data/avocado.csv")
+
+avocado2 <- dataset %>% gather(ProductCode, Volume, -X:-Total.Volume, -Total.Bags:-region)
+avocado3 <- avocado2[,-1] %>% gather(BagSize, Bags, -Date:-Total.Bags, -type:-Volume)
+
+
+# Feature engineering
+i <- c(2:4,9,11)
+avocado3[ , i] <- apply(avocado3[ , i], 2, function(x) as.numeric(as.character(x)))
+
+avocado3$ProductCode <- as.factor(avocado3$ProductCode)
+avocado3$BagSize <- as.factor(avocado3$BagSize)
+avocado3$Total.Volume <- as.factor(avocado3$Total.Volume)
+avocado3$Volume <- as.factor(avocado3$Volume)
+
+
+avocado3$Date <- ymd(avocado3$Date)
+
+avocado3 <- avocado3[order(avocado3$Date),]
+
+avocado3 <- as_tbl_time(avocado3, index = Date)
+
+
+# Convert FANG to tbl_time and group
+avocado3 <- as_tbl_time(avocado3, index = Date) %>%
+  group_by(region, ProductCode, BagSize, type)
+
+avocado3 <- as_period(avocado3, 'm')
+
+
+#Dealing with outliers
+Q <- quantile(as.double(avocado3$Volume), probs=c(.25, .75), na.rm = FALSE)
+
+iqr <- IQR(as.double(avocado3$Volume))
+up <-  Q[2]+1.5*iqr # Upper Range  
+low<- Q[1]-1.5*iqr # Lower Range
+
+avocado3<- subset(avocado3, as.double(avocado3$Volume) > (Q[1] - 1.5*iqr) & as.double(avocado3$Volume) < (Q[2]+1.5*iqr))
+
+
+#
+Q <- quantile(as.double(avocado3$Total.Volume), probs=c(.25, .75), na.rm = FALSE)
+
+iqr <- IQR(as.double(avocado3$Total.Volume))
+up <-  Q[2]+1.5*iqr # Upper Range  
+low<- Q[1]-1.5*iqr # Lower Range
+
+avocado3 <- subset(avocado3, as.double(avocado3$Total.Volume) > (Q[1] - 1.5*iqr) & as.double(avocado3$Total.Volume) < (Q[2]+1.5*iqr))
+
+#
+
+
+Q <- quantile(as.double(avocado3$Total.Bags), probs=c(.25, .75), na.rm = FALSE)
+
+iqr <- IQR(as.double(avocado3$Total.Bags))
+up <-  Q[2]+1.5*iqr # Upper Range  
+low<- Q[1]-1.5*iqr # Lower Range
+
+avocado3 <- subset(avocado3, as.double(avocado3$Total.Bags) > (Q[1] - 1.5*iqr) & as.double(avocado3$Total.Bags) < (Q[2]+1.5*iqr))
+
+
+```
+
+
+
+
+
+
+
+
+```{r, echo=FALSE}
+mainPanel(
+
+  fluidRow(
+    tags$h2("Scatterplot of the variables"),
+    br(),
+    br(),
+    
+    "Here we will observe the relationship of specific features. Especially: ",
+    
+    br(),
+    br(),
+    
+    "1. Volume vs Average price",
+    
+    br(),
+    br(),
+    
+    "2. Date vs Average price",
+    
+    br(),
+    br(),
+    
+    "3. Volume vs type",
+    
+    br(),
+    br(),
+    br(),
+    
+    column(3,
+        selectInput('x', 'X', names(avocado3)),
+        selectInput('y', 'Y', names(avocado3), names(avocado3)[[2]]),
+        selectInput('color', 'Color', c('None', names(avocado3)), selected = 'type')
+      ),
+    br(),
+    br(),
+    
+    column(3, offset = 1,
+        selectInput('facet_row', 'Facet Row',
+          c(None='.', names(avocado3[sapply(avocado3, is.factor)]))),
+        selectInput('facet_col', 'Facet Column',
+          c(None='.', names(avocado3[sapply(avocado3, is.factor)])), selected = 'ProductCode')
+      ),
+    
+    column(3, offset = 1,
+    sliderInput('sampleSize', 'Sample Size', 
+                    min=1, max=nrow(avocado3),
+                    value=min(500, nrow(avocado3)), 
+                    step=10, round=0),
+    
+        br(),
+        checkboxInput('jitter', 'Jitter'),
+        checkboxInput('smooth', 'Smooth')),
+    
+  
+  
+  ), width = 10
+)
+```
+
+
+
+```{r, echo=FALSE}
+
+    dataset <- reactive({
+      avocado3[sample(nrow(avocado3), input$sampleSize),]
+    })
+
+
+    output$plot <- renderPlot({
+      
+      p <- ggplot(dataset(), aes_string(x=input$x, y=input$y)) + geom_point()
+      
+      if (input$color != 'None')
+        p <- p + aes_string(color=input$color)
+      
+      facets <- paste(input$facet_row, '~', input$facet_col)
+      if (facets != '. ~ .')
+        p <- p + facet_grid(facets)
+      
+      if (input$jitter)
+        p <- p + geom_jitter()
+      if (input$smooth)
+        p <- p + geom_smooth()
+      
+      print(p)
+    
+  })
+
+```
+
+
+
+```{r, echo=FALSE}
+
+mainPanel(
+  
+  plotOutput('plot'), width = 12,
+  
+  br(), 
+  br(),
+  br(), 
+  br(), 
+  br()
+)
+
+
+```
+
+
+```{r, echo=FALSE}
+
+mainPanel(
+  fluidRow(
+    tags$h2("Bar plot of some variables"),
+    br(),
+    br(),
+    align = "center",
+    column(3, offset = 1,
+           sliderInput('sampleSize', 'Sample Size', 
+                    min=1, max=nrow(avocado3),
+                    value=min(200, nrow(avocado3)), 
+                    step=10, round=0),
+        br()
+    ),
+    column(2, offset = 1,
+           selectInput('x1', 'X', 
+                    c(names(avocado3))),
+           
+           selectInput('color', 'Color', c('None', names(avocado3[sapply(avocado3, is.factor)])))
+           
+           )
+    
+  ), width = 12
+)
+
+
+
+```
+
+
+
+```{r, echo=FALSE}
+dataset <- reactive({
+      avocado3[sample(nrow(avocado3), input$sampleSize),]
+    })
+   
+    output$plot2 <- renderPlot({
+      
+      p <- ggplot(dataset(), aes_string(x=input$x1)) + geom_bar()
+      
+      if (input$color != 'None')
+        p <- p + aes_string(color=input$color)
+      
+      print(p)
+    
+  })
+
+
+```
+
+
+
+
+```{r, echo=FALSE}
+
+mainPanel(
+  
+  plotOutput('plot2'), width = 12,
+  
+  br(), br()
+)
+```
+
