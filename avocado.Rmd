@@ -1,0 +1,263 @@
+---
+title: "Avocado Prices"
+author: "Inga Zielińska"
+date: "`r Sys.Date()`"
+output: html_document 
+runtime: shiny 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(shiny)
+library(tidyverse)
+library(rvest)
+library(magrittr)
+library(ggmap)
+library(stringr)
+library(usmap)
+library(gtrendsR)
+
+avocados<-read.csv("./Data/avocado.csv")
+avocados <- avocados[ ,c(-1)]
+as.factor(avocados$region) %>% levels()
+
+avocados$states <- NA
+
+as.factor(avocados$states) %>% levels()
+
+avocados$states <- ifelse(avocados$region== "Albany","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Boise","Idaho",avocados$states)
+avocados$states <- ifelse(avocados$region== "California","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "CincinnatiDayton","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "Denver","Colorado",avocados$states)
+avocados$states <- ifelse(avocados$region== "Houston","Texas",avocados$states)
+avocados$states <- ifelse(avocados$region== "LasVegas","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "MiamiFtLauderdale","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "NewOrleansMobile","Louisiana",avocados$states)
+avocados$states <- ifelse(avocados$region== "PhoenixTucson","Arizona",avocados$states)
+avocados$states <- ifelse(avocados$region== "Portland","Oregon",avocados$states)
+avocados$states <- ifelse(avocados$region== "Roanoke","Virginia",avocados$states)
+avocados$states <- ifelse(avocados$region== "SanFrancisco","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "StLouis","Missouri",avocados$states)
+avocados$states <- ifelse(avocados$region== "Atlanta","Georgia",avocados$states)
+avocados$states <- ifelse(avocados$region== "Boston","Massachusetts",avocados$states)
+avocados$states <- ifelse(avocados$region== "Charlotte","North Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "HarrisburgScranton","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "Indianapolis","Indiana",avocados$states)
+avocados$states <- ifelse(avocados$region== "LosAngeles","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "NewYork","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Orlando","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "Pittsburgh","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "RaleighGreensboro","North Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "Sacramento","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "Seattle","Washington",avocados$states)
+avocados$states <- ifelse(avocados$region== "Syracuse","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "BaltimoreWashington","Maryland",avocados$states)
+avocados$states <- ifelse(avocados$region== "BuffaloRochester","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Chicago","Illinois",avocados$states)
+avocados$states <- ifelse(avocados$region== "DallasFtWorth","Texas",avocados$states)
+avocados$states <- ifelse(avocados$region== "GrandRapids","Michigan",avocados$states)
+avocados$states <- ifelse(avocados$region== "HartfordSpringfield","Connecticut",avocados$states)
+avocados$states <- ifelse(avocados$region== "Jacksonville","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "Louisville","Kentucky",avocados$states)
+avocados$states <- ifelse(avocados$region== "Nashville","Tennessee",avocados$states)
+avocados$states <- ifelse(avocados$region== "Philadelphia","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "RichmondNorfolk","Virginia",avocados$states)
+avocados$states <- ifelse(avocados$region== "SanDiego","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "SouthCarolina","South Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "Spokane","Washington",avocados$states)
+avocados$states <- ifelse(avocados$region== "Tampa","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "WestTexNewMexico","New Mexico",avocados$states)
+avocados$states <- ifelse(avocados$region== "Columbus","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "Detroit","NewYork",avocados$states)
+avocados$states <- ifelse(avocados$region== "GreatLakes","Minnesota",avocados$states)
+avocados$states <- ifelse(avocados$region== "SouthCentral","Oklahoma",avocados$states)
+avocados$states <- ifelse(avocados$region== "Southeast","Arkansas",avocados$states)
+avocados$states <- ifelse(avocados$region== "Northeast","Maine",avocados$states)
+avocados$states <- ifelse(avocados$region== "West","Nevada",avocados$states)
+
+
+```
+
+
+
+```{r}
+sliderInput("var", "Number of bins:", min = 1, max = 50, value = 30)
+reactive({
+  avocados<-read.csv("./Data/avocado.csv")
+avocados <- avocados[ ,c(-1)]
+as.factor(avocados$region) %>% levels()
+
+avocados$states <- NA
+
+avocados$states <- ifelse(avocados$region== "Albany","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Boise","Idaho",avocados$states)
+avocados$states <- ifelse(avocados$region== "California","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "CincinnatiDayton","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "Denver","Colorado",avocados$states)
+avocados$states <- ifelse(avocados$region== "Houston","Texas",avocados$states)
+avocados$states <- ifelse(avocados$region== "LasVegas","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "MiamiFtLauderdale","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "NewOrleansMobile","Louisiana",avocados$states)
+avocados$states <- ifelse(avocados$region== "PhoenixTucson","Arizona",avocados$states)
+avocados$states <- ifelse(avocados$region== "Portland","Oregon",avocados$states)
+avocados$states <- ifelse(avocados$region== "Roanoke","Virginia",avocados$states)
+avocados$states <- ifelse(avocados$region== "SanFrancisco","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "StLouis","Missouri",avocados$states)
+avocados$states <- ifelse(avocados$region== "Atlanta","Georgia",avocados$states)
+avocados$states <- ifelse(avocados$region== "Boston","Massachusetts",avocados$states)
+avocados$states <- ifelse(avocados$region== "Charlotte","North Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "HarrisburgScranton","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "Indianapolis","Indiana",avocados$states)
+avocados$states <- ifelse(avocados$region== "LosAngeles","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "NewYork","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Orlando","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "Pittsburgh","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "RaleighGreensboro","North Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "Sacramento","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "Seattle","Washington",avocados$states)
+avocados$states <- ifelse(avocados$region== "Syracuse","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "BaltimoreWashington","Maryland",avocados$states)
+avocados$states <- ifelse(avocados$region== "BuffaloRochester","New York",avocados$states)
+avocados$states <- ifelse(avocados$region== "Chicago","Illinois",avocados$states)
+avocados$states <- ifelse(avocados$region== "DallasFtWorth","Texas",avocados$states)
+avocados$states <- ifelse(avocados$region== "GrandRapids","Michigan",avocados$states)
+avocados$states <- ifelse(avocados$region== "HartfordSpringfield","Connecticut",avocados$states)
+avocados$states <- ifelse(avocados$region== "Jacksonville","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "Louisville","Kentucky",avocados$states)
+avocados$states <- ifelse(avocados$region== "Nashville","Tennessee",avocados$states)
+avocados$states <- ifelse(avocados$region== "Philadelphia","Pennsylvania",avocados$states)
+avocados$states <- ifelse(avocados$region== "RichmondNorfolk","Virginia",avocados$states)
+avocados$states <- ifelse(avocados$region== "SanDiego","California",avocados$states)
+avocados$states <- ifelse(avocados$region== "SouthCarolina","South Carolina",avocados$states)
+avocados$states <- ifelse(avocados$region== "Spokane","Washington",avocados$states)
+avocados$states <- ifelse(avocados$region== "Tampa","Florida",avocados$states)
+avocados$states <- ifelse(avocados$region== "WestTexNewMexico","New Mexico",avocados$states)
+avocados$states <- ifelse(avocados$region== "Columbus","Ohio",avocados$states)
+avocados$states <- ifelse(avocados$region== "Detroit","NewYork",avocados$states)
+avocados$states <- ifelse(avocados$region== "GreatLakes","Minnesota",avocados$states)
+avocados$states <- ifelse(avocados$region== "SouthCentral","Oklahoma",avocados$states)
+avocados$states <- ifelse(avocados$region== "Southeast","Arkansas",avocados$states)
+avocados$states <- ifelse(avocados$region== "Northeast","Maine",avocados$states)
+avocados$states <- ifelse(avocados$region== "West","Nevada",avocados$states)
+
+  
+  
+  avocados_no_na <- avocados[which(!is.na(avocados$states)),c(input$var,14)]
+
+  
+  avocados_no_na  <- aggregate(avocados_no_na[,input$var], by=list(Category=avocados_no_na$states), FUN=mean)
+avocados_no_na$fips <-fips(avocados_no_na$Category)
+colnames(avocados_no_na ) <- c("state","hits","fips")
+
+})
+  
+
+renderPlot({
+  
+
+
+  # draw the histogram with the specified number of bins
+  plot_usmap(
+    data = avocados_no_na,
+             values = "hits",
+             color = "white", 
+             labels=FALSE) + 
+  scale_fill_continuous( low = "#C5DBC5", high = "#239223", 
+                         name = "Popularity", label = scales::comma
+  ) + 
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Popularity of Thanksgiving Google Search by State", caption = "Source: @littlemissdata")
+
+})
+
+reactive(avocados_no_na[,input$var])
+```
+
+
+
+
+# shiny app #1
+
+```{r}
+
+renderPlot({
+  
+  avocados_no_na <- avocados[which(!is.na(avocados$states)),c(var,14)]
+  # draw the histogram with the specified number of bins
+  plot_usmap(
+    data = avocados_no_na,
+             values = "hits",
+             color = "white", 
+             labels=FALSE) + 
+  scale_fill_continuous( low = "#C5DBC5", high = "#239223", 
+                         name = "Popularity", label = scales::comma
+  ) + 
+  theme(legend.position = "right") + 
+  theme(panel.background = element_rect(colour = "black")) + 
+  labs(title = "Popularity of Thanksgiving Google Search by State", caption = "Source: @littlemissdata")
+
+})
+```
+
+
+# shiny app #2
+
+```{r}
+ui <-
+  fluidPage(
+  titlePanel("censusVis"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Create demographic maps with 
+               information from the 2010 US Census."),
+      
+      selectInput("var", 
+                  label = "Choose a variable to display",
+                  choices = c("Percent White", "Percent Black",
+                              "Percent Hispanic", "Percent Asian"),
+                  selected = "Percent White"),
+      
+      sliderInput("range", 
+                  label = "Range of interest:",
+                  min = 0, max = 100, value = c(0, 100))
+    ),
+    
+    mainPanel(plotOutput("map"))
+  )
+)
+
+server <-
+  function(input, output) {
+   
+  output$map <- renderPlot({
+    
+    data <- switch(input$var, 
+                     "Percent White" = counties$white,
+                     "Percent Black" = counties$black,
+                     "Percent Hispanic" = counties$hispanic,
+                     "Percent Asian" = counties$asian)
+    
+    percent_map(var = data, 
+                color = "orange", 
+                legend.title = "Title", 
+                min = input$range[1], 
+                max = input$range[2])
+    })
+  
+  }
+
+shinyApp(
+  ui = ui,
+  server = server,
+  options = list(height = 500)
+  )
+```
+
+
+# shiny app #3
+
+
+
