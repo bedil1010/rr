@@ -1,20 +1,19 @@
 ## Avocado Analysis 
 
-Files:
+###Files:
 
 * avocado.RData: RData with preprocessed data
-* 
+* avocado.Rmd: description of dataset as Rmd
+* avocado.Proj: description of dataset as Proj
+* avocado.csv: csv version of dataset 
+* README.md: description of the project as github README
+* main_last.Rmd: Description of project with with ui and server shiny application
+* src: input images used in the app
 
 
-Here we are just using avocado dataset from kaggle.com for analysis where we will utilize Shiny package. Especially you will find the feature as:
+### Packages:
+ggplot2, tidyr, dplyr, lubridate, tibbletime, shiny, tidyverse, rvest, magrittr, ggmap, stringr, usmap, gtrendsR, shinyWidgets.
 
-- Map of the avocado consumption in US
-
-- The relationship of the various feature of the dataset
-
-- Simple linear regression for Price vs Volume
-
-All of the mentioned above us done using Shiny from R.
 
 # Dataset
 
@@ -35,3 +34,19 @@ The table below represents weekly 2018 retail scan data for National retail volu
 - `4046` - Total number of avocados with PLU 4046 sold
 - `4225` - Total number of avocados with PLU 4225 sold
 - `4770` - Total number of avocados with PLU 4770 sold
+
+## The App
+
+In our app we are using avocado dataset from kaggle.com, analyzing it using Shiny package. In includes:
+
+- Map of the avocado consumption in US in different states
+
+### Scatter plot
+- The relationship of the various features of the dataset as:
+
+    - Date vs Average price
+    - Volume vs price + types
+    - Simple linear regression for Price vs Volume
+    
+### Bar plot
+    - Checking the density of different features
