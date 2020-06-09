@@ -42,11 +42,12 @@ In our app we are using avocado dataset from kaggle.com, analyzing it using Shin
 - Map of the avocado consumption in US in different states
 
 ### Scatter plot
-- The relationship of the various features of the dataset as:
+- The relationship of the various features (numerical) of the dataset as:
 
     - Date vs Average price
     - Volume vs price + types
     - Simple linear regression for Price vs Volume
     
 ### Bar plot
-    - Checking the density of different features
+- Checking the density of different features (numerical) 
+    - with respect to factor features
