@@ -1,21 +1,21 @@
 ## Avocado Analysis 
 
-###Files:
+### Files:
 
-* avocado.RData: RData with preprocessed data
-* avocado.Rmd: description of dataset as Rmd
-* avocado.Proj: description of dataset as Proj
-* avocado.csv: csv version of dataset 
-* README.md: description of the project as github README
-* main_last.Rmd: Description of project with with ui and server shiny application
-* src: input images used in the app
+* `avocado.RData`: RData with preprocessed data
+* `avocado.Rmd`: description of dataset as Rmd
+* `avocado.Proj`: description of dataset as Proj
+* `avocado.csv`: csv version of dataset 
+* `README.md`: description of the project as github README
+* `main_last.Rmd`: Description of project with with ui and server shiny application
+* `src`: input images used in the app
 
 
 ### Packages:
-ggplot2, tidyr, dplyr, lubridate, tibbletime, shiny, tidyverse, rvest, magrittr, ggmap, stringr, usmap, gtrendsR, shinyWidgets.
+`ggplot2`, `tidyr`, `dplyr`, `lubridate`, `tibbletime`, `shiny`, `tidyverse`, `rvest`, `magrittr`, `ggmap`, `stringr`, `usmap`, `gtrendsR`, `shinyWidgets`.
 
 
-# Dataset
+## Dataset
 
 This data was downloaded from the Hass Avocado Board website in May of 2018 & compiled into a single CSV. Here's how the Hass Avocado Board describes the data on their website:
 
@@ -35,7 +35,7 @@ The table below represents weekly 2018 retail scan data for National retail volu
 - `4225` - Total number of avocados with PLU 4225 sold
 - `4770` - Total number of avocados with PLU 4770 sold
 
-## The App
+## The App`
 
 In our app we are using avocado dataset from kaggle.com, analyzing it using Shiny package. In includes:
 
