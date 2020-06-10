@@ -38,7 +38,7 @@ Avocados Are a Heart-Healthy, Nutrient-Dense Superfood   Nutrient-dense foods ar
 - `4225` - Total number of avocados with PLU 4225 sold
 - `4770` - Total number of avocados with PLU 4770 sold
 
-## The App`
+## The App
 
 In our app we are using avocado dataset from kaggle.com. We are doing an exploratory data analysis using Shiny package where firstly have a map where and two types of graph: scatter plot and bar plot where we observe the relationship between some of the feature of the dataset.
 
