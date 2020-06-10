@@ -21,6 +21,9 @@ This data was downloaded from the Hass Avocado Board website in May of 2018 & co
 
 The table below represents weekly 2018 retail scan data for National retail volume (units) and price. Retail scan data comes directly from retailers’ cash registers based on actual retail sales of Hass avocados. Starting in 2013, the table below reflects an expanded, multi-outlet retail data set. Multi-outlet reporting includes an aggregation of the following channels: grocery, mass, club, drug, dollar and military. The Average Price (of avocados) in the table reflects a per unit (per avocado) cost, even when multiple units (avocados) are sold in bags. The Product Lookup codes (PLU’s) in the table are only for Hass avocados. Other varieties of avocados (e.g. greenskins) are not included in this table.
 
+Avocados Are a Heart-Healthy, Nutrient-Dense Superfood   Nutrient-dense foods are those that provide substantial amounts of vitamins, minerals and other nutrients with relatively few calories. One-third of a medium avocado (50 g) has 80 calories and contributes nearly 20 vitamins and minerals, making it a great nutrient-dense food choice."
+
+
 - The dataset can be found on: https://www.kaggle.com/neuromusic/avocado-prices
 - Which was collected from: https://hassavocadoboard.com/
 
@@ -37,7 +40,9 @@ The table below represents weekly 2018 retail scan data for National retail volu
 
 ## The App`
 
-In our app we are using avocado dataset from kaggle.com, analyzing it using Shiny package. In includes:
+In our app we are using avocado dataset from kaggle.com. We are doing an exploratory data analysis using Shiny package where firstly have a map where and two types of graph: scatter plot and bar plot where we observe the relationship between some of the feature of the dataset.
+
+### Map
 
 - Map of the avocado consumption in US in different states
 
