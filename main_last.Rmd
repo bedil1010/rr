@@ -1,12 +1,11 @@
-
 ---
+title: <center> <h5>June 2020</h5> </center>
 output: html_document 
 runtime: shiny 
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -21,13 +20,10 @@ library(stringr)
 library(usmap)
 library(gtrendsR)
 library(shinyWidgets)
-
 ```
 
 
 ```{r, echo=FALSE}
-
-
   
 mainPanel(
       fluidRow(
@@ -38,11 +34,9 @@ mainPanel(
       ), width = 12,  
       br()        
 )
-
 titlePanel(tags$img(src = "./src/picture.jpg", width = "100%"), 
            br()
            )
-
 mainPanel(br())
 sidebarLayout(position = "left",
   sidebarPanel(
@@ -72,7 +66,12 @@ sidebarLayout(position = "left",
                  br(),
                  br(),
                 
-                "5.Great for Babies and Kids The avocado’s creamy consistency makes it one of the first fresh foods a baby can enjoy."
+                "5.Great for Babies and Kids The avocado’s creamy consistency makes it one of the first fresh foods a baby can enjoy.",
+                
+                br(),
+                br(),
+                
+                "source: https://www.californiaavocado.com/nutrition/nutrients"
                  
                ))
           
@@ -99,7 +98,8 @@ sidebarLayout(position = "left",
       
           "The table above shows different types of avocados.",
           br(),
-          br()
+          br(),
+          "source: http://www.bobbywires.com/plu-1.php?S=P&L=A&V=AVOCADOS"
         )
         ), 
         tabPanel("Interesting facts", 
@@ -108,17 +108,27 @@ sidebarLayout(position = "left",
                       "Experts found that when people with this mutation in the SCARB1 gene, called the P376L variant, have high levels of HDL-C. HDL-C is the good cholesterol found in avocados and people with the mutation have an 80 per cent increased relative risk of coronary heart disease. ",
                   br(),
                   br(),
+                  
+                  "source: https://www.thesun.co.uk/living/3121392/this-is-why-eating-avocado-is-not-as-good-for-you-as-you-might-think/",
+                  br(),
+                  br(),
           
    "An avocado that's ready to eat has light green flesh. A rotten one has brown or black spots throughout the flesh",
                 br(),
                 br(),
-  " Avocado contains a toxin called persin, but only certain species of animals are poisoned by persin. While dogs and cats are rarely affected by persin, avocado poisoning can be deadly to birds and large animals (such as cows, goats, sheep)."
+   
+   "source: http://www.dvo.com/newsletter/weekly/2019/8-23-213/cooknart3.html",
+              br(),
+                br(),
+  " Avocado contains a toxin called persin, but only certain species of animals are poisoned by persin. While dogs and cats are rarely affected by persin, avocado poisoning can be deadly to birds and large animals (such as cows, goats, sheep).",
+              br(),
+              br(),
+              "source: https://www.petpoisonhelpline.com/poison/avocado/"
           
           ))
         
    ),width = 8
 ),
-
 mainPanel(
   fluidPage( 
          style = "background-color: #E5AA66;",
@@ -126,14 +136,10 @@ mainPanel(
          br(),
          p("AVOCADO NUTRIENTS
 One-third of a medium avocado (50 g) has 80 calories and contributes nearly 20 vitamins, minerals and phytonutrients, making it a heart-healthy choice to help meet nutrient needs. Although phytonutrients are not essential, research suggests they may promote human health.
-
 The Dietary Guidelines for Americans and the American Heart Association recommend eating less nutrient-poor foods and limiting the amount of saturated fat, trans fat, added sugars and sodium consumed. The majority of fats in one’s diet should be heart-healthy monounsaturated or polyunsaturated; more than 75 percent of the fat in avocados is unsaturated, good fat.
-
-Why naturally good fats? Because the body needs some dietary fat in moderation to help with absorption of nutrients. Good fats, monounsaturated and polyunsaturated fats, do not raise LDL (“bad”) cholesterol levels..")
-
+Why naturally good fats? Because the body needs some dietary fat in moderation to help with absorption of nutrients. Good fats, monounsaturated and polyunsaturated fats, do not raise LDL (“bad”) cholesterol levels.", br(), br(),
+"source: https://www.californiaavocado.com/nutrition/nutrients")
   ),width = 4))
-
-
 ```
 
 
@@ -148,11 +154,8 @@ fluidRow(
                   choices = c("AveragePrice", "Total.Volume"),
                   selected = "AveragePrice")
  # style = "background-color: #b1d08e;",
-
    
 ), width = 12)
-
-
 mainPanel(br())
 ```
 
@@ -211,8 +214,6 @@ avocados$states <- ifelse(avocados$region== "SouthCentral","Oklahoma",avocados$s
 avocados$states <- ifelse(avocados$region== "Southeast","Arkansas",avocados$states)
 avocados$states <- ifelse(avocados$region== "Northeast","Maine",avocados$states)
 avocados$states <- ifelse(avocados$region== "West","Nevada",avocados$states)
-
-
 ```
 
 
@@ -226,16 +227,13 @@ renderTable({
   if(input$rows == "Total.Volume"){ var <- 3  }
   
   avocados_no_na <- avocados[which(!is.na(avocados$states)),c(var,14)]
-
   avocados_no_na_grouped <- avocados_no_na %>%
   group_by(states) %>%
     summarise(mean = mean(!!rlang::sym(input$rows),na.rm=TRUE))
     head(avocados_no_na_grouped, 10) 
-
   
     
 })),
-
 mainPanel(
 renderPlot({ 
   
@@ -244,7 +242,6 @@ renderPlot({
   if(input$rows == "Total.Volume"){ var <- 3  }
   
   avocados_no_na <- avocados[which(!is.na(avocados$states)),c(var,14)]
-
   avocados_no_na_grouped <- avocados_no_na %>%
   group_by(states) %>%
     summarise(mean = mean(!!rlang::sym(input$rows),na.rm=TRUE))
@@ -252,7 +249,6 @@ renderPlot({
   
   avocados_no_na_grouped$fips <-fips(avocados_no_na_grouped$states)
   colnames(avocados_no_na_grouped) <- c("state","hits","fips")
-
   plot_usmap(
     data = avocados_no_na_grouped,
              values = "hits",
@@ -266,75 +262,45 @@ renderPlot({
   labs(title = "Popularity of Thanksgiving Google Search by State", caption = "Source: @littlemissdata")
   
 })))
-
-
-
 ```
 
 
 ```{r, echo=FALSE}
-
 dataset <- read.csv("./avocado/Data/avocado.csv")
-
 avocado2 <- dataset %>% gather(ProductCode, Volume, -X:-Total.Volume, -Total.Bags:-region)
 avocado3 <- avocado2[,-1] %>% gather(BagSize, Bags, -Date:-Total.Bags, -type:-Volume)
-
-
 # Feature engineering
 i <- c(2:4,9,11)
 avocado3[ , i] <- apply(avocado3[ , i], 2, function(x) as.numeric(as.character(x)))
-
 avocado3$ProductCode <- as.factor(avocado3$ProductCode)
 avocado3$BagSize <- as.factor(avocado3$BagSize)
 avocado3$Total.Volume <- as.factor(avocado3$Total.Volume)
 avocado3$Volume <- as.factor(avocado3$Volume)
-
-
 avocado3$Date <- ymd(avocado3$Date)
-
 avocado3 <- avocado3[order(avocado3$Date),]
-
 avocado3 <- as_tbl_time(avocado3, index = Date)
-
-
 # Convert FANG to tbl_time and group
 avocado3 <- as_tbl_time(avocado3, index = Date) %>%
   group_by(region, ProductCode, BagSize, type)
-
 avocado3 <- as_period(avocado3, 'm')
-
-
 #Dealing with outliers
 Q <- quantile(as.double(avocado3$Volume), probs=c(.25, .75), na.rm = FALSE)
-
 iqr <- IQR(as.double(avocado3$Volume))
 up <-  Q[2]+1.5*iqr # Upper Range  
 low<- Q[1]-1.5*iqr # Lower Range
-
 avocado3<- subset(avocado3, as.double(avocado3$Volume) > (Q[1] - 1.5*iqr) & as.double(avocado3$Volume) < (Q[2]+1.5*iqr))
-
-
 #
 Q <- quantile(as.double(avocado3$Total.Volume), probs=c(.25, .75), na.rm = FALSE)
-
 iqr <- IQR(as.double(avocado3$Total.Volume))
 up <-  Q[2]+1.5*iqr # Upper Range  
 low<- Q[1]-1.5*iqr # Lower Range
-
 avocado3 <- subset(avocado3, as.double(avocado3$Total.Volume) > (Q[1] - 1.5*iqr) & as.double(avocado3$Total.Volume) < (Q[2]+1.5*iqr))
-
 #
-
-
 Q <- quantile(as.double(avocado3$Total.Bags), probs=c(.25, .75), na.rm = FALSE)
-
 iqr <- IQR(as.double(avocado3$Total.Bags))
 up <-  Q[2]+1.5*iqr # Upper Range  
 low<- Q[1]-1.5*iqr # Lower Range
-
 avocado3 <- subset(avocado3, as.double(avocado3$Total.Bags) > (Q[1] - 1.5*iqr) & as.double(avocado3$Total.Bags) < (Q[2]+1.5*iqr))
-
-
 ```
 
 
@@ -346,7 +312,6 @@ avocado3 <- subset(avocado3, as.double(avocado3$Total.Bags) > (Q[1] - 1.5*iqr) &
 
 ```{r, echo=FALSE}
 mainPanel(
-
   fluidRow(
     tags$h2("Scatterplot of the variables"),
     br(),
@@ -407,12 +372,9 @@ mainPanel(
 
 
 ```{r, echo=FALSE}
-
     dataset <- reactive({
       avocado3[sample(nrow(avocado3), input$sampleSize),]
     })
-
-
     output$plot <- renderPlot({
       
       p <- ggplot(dataset(), aes_string(x=input$x, y=input$y)) + geom_point()
@@ -432,13 +394,11 @@ mainPanel(
       print(p)
     
   })
-
 ```
 
 
 
 ```{r, echo=FALSE}
-
 mainPanel(
   
   plotOutput('plot'), width = 12,
@@ -449,13 +409,10 @@ mainPanel(
   br(), 
   br()
 )
-
-
 ```
 
 
 ```{r, echo=FALSE}
-
 mainPanel(
   fluidRow(
     tags$h2("Bar plot of some variables"),
@@ -479,9 +436,6 @@ mainPanel(
     
   ), width = 12
 )
-
-
-
 ```
 
 
@@ -501,15 +455,12 @@ dataset <- reactive({
       print(p)
     
   })
-
-
 ```
 
 
 
 
 ```{r, echo=FALSE}
-
 mainPanel(
   
   plotOutput('plot2'), width = 12,
@@ -517,4 +468,3 @@ mainPanel(
   br(), br()
 )
 ```
-
